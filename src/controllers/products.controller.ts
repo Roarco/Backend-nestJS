@@ -14,6 +14,7 @@ import {
 import { ParseIntPipe } from '../common/parse-int.pipe'; // <-- pipe custom
 import { ProductsService } from '../services/products.service';
 import { Product } from '../interfaces/product.interface';
+import { CreateProductDto, UpdateProductDto } from '../dtos/products.dtos';
 
 @Controller('products')
 export class ProductsController {
@@ -37,7 +38,7 @@ export class ProductsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() product: Product): Product {
+  create(@Body() product: CreateProductDto): Product {
     return this.productsService.create(product);
   }
 
@@ -45,7 +46,7 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() product: Product,
+    @Body() product: UpdateProductDto,
   ): Product {
     return this.productsService.update(id, product);
   }
