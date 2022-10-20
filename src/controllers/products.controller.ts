@@ -7,11 +7,14 @@ import {
   Body,
   Put,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 
 @Controller('products')
 export class ProductsController {
   @Get()
+  @HttpCode(HttpStatus.OK)
   getAll(
     @Query('limit') limit = 10,
     @Query('offset') offset = 0,
@@ -23,6 +26,7 @@ export class ProductsController {
   }
 
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   getOne(@Param('id') id: string) {
     return {
       message: `Product ${id}`,
@@ -30,6 +34,7 @@ export class ProductsController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() payload: any) {
     return {
       message: 'Product created',
@@ -38,6 +43,7 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @HttpCode(HttpStatus.OK)
   update(@Param('id') id: string, @Body() payload: any) {
     return {
       message: `Product ${id} updated`,
@@ -46,6 +52,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.OK)
   delete(@Param('id') id: string) {
     return {
       id: id,
