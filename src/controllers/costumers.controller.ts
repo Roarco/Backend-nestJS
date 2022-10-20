@@ -4,11 +4,15 @@ import { Controller, Get, Param } from '@nestjs/common';
 export class CostumersController {
   @Get()
   getCostumers() {
-    return 'Costumers';
+    return {
+      message: 'Costumers',
+    };
   }
 
   @Get(':id')
   getCostumer(@Param('id') id: string) {
-    return `Costumer ${id}`;
+    return {
+      message: `Costumer ${id}`,
+    };
   }
 }

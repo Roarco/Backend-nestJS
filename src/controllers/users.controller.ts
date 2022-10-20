@@ -4,11 +4,15 @@ import { Controller, Get, Param } from '@nestjs/common';
 export class UsersController {
   @Get()
   getUsers() {
-    return 'Users';
+    return {
+      message: 'Users',
+    };
   }
 
   @Get(':id')
   getUser(@Param('id') id: string) {
-    return `User ${id}`;
+    return {
+      message: `User ${id}`,
+    };
   }
 }
