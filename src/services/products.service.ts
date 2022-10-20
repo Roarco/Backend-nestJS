@@ -37,6 +37,10 @@ export class ProductsService {
 
   update(id: number, product: Product): Product {
     const index = this.products.findIndex((item) => item.id === id);
+
+    if (index === -1) {
+      return null;
+    }
     this.products[index] = {
       ...this.products[index],
       ...product,
@@ -46,6 +50,10 @@ export class ProductsService {
 
   delete(id: number): boolean {
     const index = this.products.findIndex((item) => item.id === id);
+
+    if (index === -1) {
+      return false;
+    }
     this.products.splice(index, 1);
     return true;
   }

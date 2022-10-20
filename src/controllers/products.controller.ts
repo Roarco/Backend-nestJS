@@ -42,15 +42,28 @@ export class ProductsController {
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: string, @Body() product: Product): Product {
-    return this.productsService.update(+id, product);
+  update(@Param('id') id: string, @Body() product: Product): object {
+    const response = this.productsService.update(+id, product);
+    if (response) {
+      return response;
+    }
+    return {
+      message: 'Product not found',
+    };
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   delete(@Param('id') id: string): object {
+    const response = this.productsService.delete(+id);
+
+    if (response) {
+      return {
+        message: 'Product deleted',
+      };
+    }
     return {
-      deleted: this.productsService.delete(+id),
+      message: 'Product not found',
     };
   }
 }
