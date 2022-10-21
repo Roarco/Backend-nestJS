@@ -18,8 +18,8 @@ export class ProductsService {
     },
   ];
 
-  findAll(): Product[] {
-    return this.products;
+  findAll(limit: number, offset: number): Product[] {
+    return this.products.slice(offset, offset + limit);
   }
 
   findOne(id: number): Product {

@@ -6,46 +6,49 @@ import {
   Param,
   Post,
   Put,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
+
+import { BrandsService } from '../services/brands.service';
+import { Brand } from '../interfaces/brand.interface';
+import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dtos';
 
 @Controller('brands')
 export class BrandsController {
+  constructor(private brandsService: BrandsService) {}
+
   @Get()
-  getAll() {
-    return {
-      message: 'Brands',
-    };
+  @HttpCode(HttpStatus.OK)
+  getAll(): Brand[] {
+    return this.brandsService.findAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string) {
-    return {
-      message: `Brand ${id}`,
-    };
+  @HttpCode(HttpStatus.OK)
+  getOne(@Param('id', ParseIntPipe) id: number): Brand {
+    return this.brandsService.findOne(id);
   }
 
   @Post()
-  create(@Body() payload: any) {
-    return {
-      message: 'Brand created',
-      payload,
-    };
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() brand: CreateBrandDto): Brand {
+    return this.brandsService.create(brand);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() payload: any) {
-    return {
-      message: `Brand ${id} updated`,
-      payload,
-    };
+  @HttpCode(HttpStatus.OK)
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() brand: UpdateBrandDto,
+  ): Brand {
+    return this.brandsService.update(id, brand);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return {
-      id: id,
-      deleted: true,
-      count: 1,
-    };
+  @HttpCode(HttpStatus.OK)
+  delete(@Param('id', ParseIntPipe) id: number): boolean {
+    return this.brandsService.delete(id);
   }
 }

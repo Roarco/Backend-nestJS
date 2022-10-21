@@ -6,46 +6,48 @@ import {
   Param,
   Post,
   Put,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
+
+import { UsersService } from '../services/users.service';
+import { User } from '../interfaces/user.interface';
+import { CreateUserDto, UpdateUserDto } from '../dtos/user.dtos';
 
 @Controller('users')
 export class UsersController {
+  constructor(private usersService: UsersService) {}
+
   @Get()
-  getAll() {
-    return {
-      message: 'Users',
-    };
+  @HttpCode(HttpStatus.OK)
+  getAll(): User[] {
+    return this.usersService.findAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string) {
-    return {
-      message: `User ${id}`,
-    };
+  @HttpCode(HttpStatus.OK)
+  getOne(@Param('id', ParseIntPipe) id: number): User {
+    return this.usersService.findOne(id);
   }
 
   @Post()
-  create(@Body() payload: any) {
-    return {
-      message: 'User created',
-      payload,
-    };
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() user: CreateUserDto): User {
+    return this.usersService.create(user);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() payload: any) {
-    return {
-      message: `User ${id} updated`,
-      payload,
-    };
+  @HttpCode(HttpStatus.OK)
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() category: UpdateUserDto,
+  ): User {
+    return this.usersService.update(id, category);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return {
-      id: id,
-      deleted: true,
-      count: 1,
-    };
+  delete(@Param('id', ParseIntPipe) id: number): boolean {
+    return this.usersService.delete(id);
   }
 }

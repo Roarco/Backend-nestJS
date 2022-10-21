@@ -22,12 +22,8 @@ export class ProductsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll(
-    @Query('limit') limit = 10,
-    @Query('offset') offset = 0,
-    @Query('brand') brand: string,
-  ): Product[] {
-    return this.productsService.findAll();
+  getAll(@Query('limit') limit = 5, @Query('offset') offset = 0): Product[] {
+    return this.productsService.findAll(limit, offset);
   }
 
   @Get(':id')
