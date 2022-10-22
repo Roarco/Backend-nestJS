@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { UsersService } from '../services/users.service';
-import { User } from '../interfaces/user.interface';
+import { User } from '../entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dtos';
 
 @Controller('users')

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { BrandsService } from '../services/brands.service';
-import { Brand } from '../interfaces/brand.interface';
+import { Brand } from '../entities/brand.entity';
 import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dtos';
 
 @Controller('brands')

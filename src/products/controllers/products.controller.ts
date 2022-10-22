@@ -11,9 +11,9 @@ import {
   HttpStatus,
   //ParseIntPipe, // <-- pipe de nestjs
 } from '@nestjs/common';
-import { ParseIntPipe } from '../common/parse-int.pipe'; // <-- pipe custom
+import { ParseIntPipe } from '../../common/parse-int.pipe'; // <-- pipe custom
 import { ProductsService } from '../services/products.service';
-import { Product } from '../interfaces/product.interface';
+import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from '../dtos/products.dtos';
 
 @Controller('products')

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { CostumesService } from '../services/costumes.service';
-import { Customer } from '../interfaces/customer.interface';
+import { Customer } from '../entities/customer.entity';
 import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customers.dtos';
 
 @Controller('costumers')

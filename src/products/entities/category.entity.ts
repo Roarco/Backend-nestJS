@@ -1,4 +1,4 @@
-export interface Brand {
+export class Category {
   id: number;
   name: string;
   description: string;
