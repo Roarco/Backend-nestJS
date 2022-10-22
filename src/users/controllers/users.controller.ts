@@ -13,6 +13,7 @@ import {
 
 import { UsersService } from '../services/users.service';
 import { User } from '../entities/user.entity';
+import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dtos';
 
 @Controller('users')
@@ -29,6 +30,12 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   getOne(@Param('id', ParseIntPipe) id: number): User {
     return this.usersService.findOne(id);
+  }
+
+  @Get(':id/orders')
+  @HttpCode(HttpStatus.OK)
+  getOrdersByUser(@Param('id', ParseIntPipe) id: number): Order[] {
+    return this.usersService.findOrdersByUser(id);
   }
 
   @Post()
