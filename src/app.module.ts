@@ -9,10 +9,13 @@ import { HttpModule } from '@nestjs/axios';
 //import { firstValueFrom } from 'rxjs';
 import { DatabaseModule } from './database/database.module';
 import { enviroments } from './enviroments';
+import configuration from './config/configuration';
+//import { configuration } from './config/configuration';
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: enviroments[process.env.NODE_ENV] || '.env',
+      load: [configuration],
       isGlobal: true,
     }),
     HttpModule,

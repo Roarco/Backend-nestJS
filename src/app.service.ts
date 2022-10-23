@@ -1,19 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Inject } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import configuration from './config/configuration';
 @Injectable()
 export class AppService {
   constructor(
-    private configService: ConfigService,
+    @Inject(configuration.KEY)
+    private config: ConfigType<typeof configuration>,
     //@Inject('TASKS') private tasks: any[],
     readonly http: HttpService,
   ) {}
   getHello(): string {
-    const apiKey = this.configService.get('API_KEY');
-    const dbName = this.configService.get('DATABASE_NAME');
-    return `Hello World! apiKey: ${apiKey} dbName: ${dbName}`;
+    const apiKey = this.config.apiKey;
+    const dbName = this.config.database.name;
+    const dbPort = this.config.database.port;
+    return `Hello World! apiKey: ${apiKey} dbName: ${dbName} dbPort: ${dbPort}`;
   }
 
   async getTasks() {
