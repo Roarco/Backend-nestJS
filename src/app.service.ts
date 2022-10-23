@@ -1,16 +1,18 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class AppService {
   constructor(
-    @Inject('API_KEY') private apiKey: string,
+    private configService: ConfigService,
     //@Inject('TASKS') private tasks: any[],
     readonly http: HttpService,
   ) {}
   getHello(): string {
-    return `Hello World! ${this.apiKey}`;
+    const apiKey = this.configService.get('API_KEY');
+    return `Hello World! ${apiKey}`;
   }
 
   async getTasks() {

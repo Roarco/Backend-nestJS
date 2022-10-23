@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  const PORT = process.env.PORT || 3000;
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
@@ -10,6 +11,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // <-- throw an error if a property is not defined in the DTO
     }),
   );
-  await app.listen(3000);
+  await app.listen(PORT);
 }
 bootstrap();

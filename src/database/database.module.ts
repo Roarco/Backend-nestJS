@@ -1,5 +1,4 @@
 import { Module, Global } from '@nestjs/common';
-
 const API_key = '54564654';
 const API_key_PROD = 'Prod54564654';
 

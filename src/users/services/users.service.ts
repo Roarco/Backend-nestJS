@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-
+import { Injectable, NotFoundException } from '@nestjs/common';
+//import { ConfigService } from '@nestjs/config';
 import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dtos';
@@ -8,8 +8,7 @@ import { ProductsService } from '../../products/services/products.service';
 @Injectable()
 export class UsersService {
   constructor(
-    private productsService: ProductsService,
-    @Inject('API_KEY') private apiKey: string,
+    private productsService: ProductsService, //private configService: ConfigService,
   ) {}
 
   private idCount = 1;
