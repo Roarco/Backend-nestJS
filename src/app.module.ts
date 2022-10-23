@@ -8,14 +8,14 @@ import { ProductsModule } from './products/products.module';
 import { HttpModule } from '@nestjs/axios';
 //import { firstValueFrom } from 'rxjs';
 import { DatabaseModule } from './database/database.module';
-
+import { enviroments } from './enviroments';
 @Module({
   imports: [
-    HttpModule,
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: enviroments[process.env.NODE_ENV] || '.env',
       isGlobal: true,
     }),
+    HttpModule,
     UsersModule,
     ProductsModule,
     DatabaseModule,
