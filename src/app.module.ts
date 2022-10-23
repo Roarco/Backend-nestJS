@@ -6,19 +6,13 @@ import { ProductsModule } from './products/products.module';
 
 import { HttpModule } from '@nestjs/axios';
 //import { firstValueFrom } from 'rxjs';
-
-const API_key = '54564654';
-const API_key_PROD = 'Prod54564654';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [HttpModule, UsersModule, ProductsModule],
+  imports: [HttpModule, UsersModule, ProductsModule, DatabaseModule],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: 'API_KEY',
-      useValue: process.env.NODE_ENV === 'production' ? API_key_PROD : API_key,
-    },
     // {
     //   provide: 'TASKS',
     //   useFactory: async (http: HttpService) => {
