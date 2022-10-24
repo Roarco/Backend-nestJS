@@ -13,7 +13,7 @@ import {
 
 import { BrandsService } from '../services/brands.service';
 import { Brand } from '../entities/brand.entity';
-import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dtos';
+import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dto';
 
 @Controller('brands')
 export class BrandsController {

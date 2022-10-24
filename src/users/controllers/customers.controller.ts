@@ -13,7 +13,7 @@ import {
 
 import { CostumesService } from '../services/costumes.service';
 import { Customer } from '../entities/customer.entity';
-import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customers.dtos';
+import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customers.dto';
 
 @Controller('costumers')
 export class CostumersController {

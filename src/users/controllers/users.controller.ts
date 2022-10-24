@@ -14,7 +14,7 @@ import {
 import { UsersService } from '../services/users.service';
 import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
-import { CreateUserDto, UpdateUserDto } from '../dtos/user.dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 
 @Controller('users')
 export class UsersController {
