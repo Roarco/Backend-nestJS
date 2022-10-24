@@ -2,17 +2,17 @@ import { IsNotEmpty, IsString, IsPhoneNumber } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class CreateCustomerDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'John' })
   @IsNotEmpty()
   @IsString()
   readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Doe' })
   @IsNotEmpty()
   @IsString()
   readonly lastname: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '356456456' })
   @IsNotEmpty()
   @IsString()
   @IsPhoneNumber('CO')

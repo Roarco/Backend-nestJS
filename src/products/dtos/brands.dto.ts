@@ -2,17 +2,17 @@ import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class CreateBrandDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'Nike' })
   @IsNotEmpty()
   @IsString()
   readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Nike is a brand of sports equipment and apparel' })
   @IsNotEmpty()
   @IsString()
   readonly description: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'http://localhost:3000/images/nike.jpg' })
   @IsNotEmpty()
   @IsUrl()
   readonly image: string;
