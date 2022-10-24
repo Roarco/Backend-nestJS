@@ -16,10 +16,19 @@ export class CategoriesService {
     },
   ];
 
+  /**
+   * This method find all categories in the database
+   * @returns {Category[]}
+   */
   findAll(): Category[] {
     return this.categories;
   }
 
+  /**
+   * This method find one category in the database
+   * @param id
+   * @returns {Category}
+   */
   findOne(id: number): Category {
     const category = this.categories.find((item) => item.id === id);
     if (!category) {
@@ -28,6 +37,12 @@ export class CategoriesService {
     return category;
   }
 
+  /**
+   * This method creates a new category in the database
+   * @param category
+   * @returns {Category}
+   * @returns {Category}
+   */
   create(category: CreateCategoryDto): Category {
     this.idCount = this.idCount + 1;
     const newCategory = {
@@ -38,6 +53,12 @@ export class CategoriesService {
     return newCategory;
   }
 
+  /**
+   * This method updates a category in the database
+   * @param id
+   * @param category
+   * @returns {Category}
+   */
   update(id: number, category: UpdateCategoryDto): Category {
     const index = this.categories.findIndex((item) => item.id === id);
     if (index === -1) {
@@ -50,6 +71,11 @@ export class CategoriesService {
     return this.categories[index];
   }
 
+  /**
+   * This method removes a category in the database
+   * @param id
+   * @returns {boolean}
+   */
   delete(id: number): boolean {
     const index = this.categories.findIndex((item) => item.id === id);
     if (index === -1) {

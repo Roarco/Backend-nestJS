@@ -22,10 +22,19 @@ export class UsersService {
     },
   ];
 
+  /**
+   * This method find all users in the database
+   * @returns {User[]}
+   */
   findAll(): User[] {
     return this.users;
   }
 
+  /**
+   * This method find one user in the database
+   * @param id
+   * @returns {User}
+   */
   findOne(id: number): User {
     const user = this.users.find((user) => user.id === id);
     if (!user) {
@@ -33,6 +42,12 @@ export class UsersService {
     }
     return user;
   }
+
+  /**
+   * This method creates a new user in the database
+   * @param user
+   * @returns {User}
+   */
 
   create(user: CreateUserDto): User {
     this.idCount = this.idCount + 1;
@@ -43,6 +58,13 @@ export class UsersService {
     this.users.push(newUser);
     return newUser;
   }
+
+  /**
+   * This method updates a user in the database
+   * @param id
+   * @param user
+   * @returns {User}
+   */
 
   update(id: number, user: UpdateUserDto): User {
     const index = this.users.findIndex((item) => item.id === id);
@@ -57,6 +79,12 @@ export class UsersService {
     return this.users[index];
   }
 
+  /**
+   * This method deletes a user in the database
+   * @param id
+   * @returns {boolean}
+   */
+
   delete(id: number): boolean {
     const index = this.users.findIndex((item) => item.id === id);
 
@@ -66,6 +94,12 @@ export class UsersService {
     this.users.splice(index, 1);
     return true;
   }
+
+  /**
+   * This method find orders by user in the database
+   * @param id
+   * @returns {Order[]}
+   */
 
   findOrdersByUser(id: number): Order[] {
     const user = this.findOne(id);

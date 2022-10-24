@@ -18,10 +18,19 @@ export class ProductsService {
     },
   ];
 
+  /**
+   * This method find all products in the database
+   * @returns {Product[]}
+   */
   findAll(limit: number, offset: number): Product[] {
     return this.products.slice(offset, offset + limit);
   }
 
+  /**
+   * This method find one product in the database
+   * @param  {number} id - The id of the product
+   * @returns {Product}
+   */
   findOne(id: number): Product {
     const product = this.products.find((item) => item.id === id);
     if (!product) {
@@ -30,6 +39,11 @@ export class ProductsService {
     return product;
   }
 
+  /**
+   * This method creates a new product in the database
+   * @param {CreateProductDto} product - The product to create
+   * @returns {Product}
+   */
   create(product: CreateProductDto): Product {
     this.idCount = this.idCount + 1;
     const newProduct = {
@@ -40,6 +54,12 @@ export class ProductsService {
     return newProduct;
   }
 
+  /**
+   * This method updates a product in the database
+   * @param {number} id - The id of the product
+   * @param {UpdateProductDto} product - The product to update
+   * @returns {Product}
+   */
   update(id: number, product: UpdateProductDto): Product {
     const index = this.products.findIndex((item) => item.id === id);
 
@@ -53,6 +73,10 @@ export class ProductsService {
     return this.products[index];
   }
 
+  /**
+   * This method removes a product in the database
+   * @param {number} id - The id of the product
+   */
   delete(id: number): boolean {
     const index = this.products.findIndex((item) => item.id === id);
 

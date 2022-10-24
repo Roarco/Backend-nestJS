@@ -14,10 +14,19 @@ export class CostumesService {
     },
   ];
 
+  /**
+   * This method find all customers in the database
+   * @returns {Customer[]}
+   */
   findAll(): Customer[] {
     return this.customers;
   }
 
+  /**
+   * This method find one customer in the database
+   * @param id
+   * @returns {Customer}
+   */
   findOne(id: number): Customer {
     const customer = this.customers.find((c) => c.id === id);
 
@@ -27,6 +36,11 @@ export class CostumesService {
     return customer;
   }
 
+  /**
+   * This method creates a new customer in the database
+   * @param customer
+   * @returns {Customer}
+   */
   create(customer: CreateCustomerDto): Customer {
     this.idCount = this.idCount + 1;
     const newCustomer = {
@@ -37,6 +51,12 @@ export class CostumesService {
     return newCustomer;
   }
 
+  /**
+   * This method updates a customer in the database
+   * @param id
+   * @param customer
+   * @returns {Customer}
+   */
   update(id: number, customer: UpdateCustomerDto): Customer {
     const index = this.customers.findIndex((item) => item.id === id);
 
@@ -50,6 +70,11 @@ export class CostumesService {
     return this.customers[index];
   }
 
+  /**
+   * This method removes a customer in the database
+   * @param id
+   * @returns {boolean}
+   */
   delete(id: number): boolean {
     const index = this.customers.findIndex((item) => item.id === id);
 
