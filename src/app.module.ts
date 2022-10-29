@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 //import { firstValueFrom } from 'rxjs';
+import { Client } from 'pg';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,6 +14,19 @@ import { enviroments } from './enviroments';
 import configuration from './config/configuration';
 //import { configuration } from './config/configuration';
 import { validationSchema } from './config/validation';
+
+const client = new Client({
+  user: 'roberth',
+  host: 'localhost',
+  database: 'Platzi-Store',
+  password: '1104017400',
+  port: 5432,
+});
+client.connect();
+client.query('SELECT * FROM tasks', (err, res) => {
+  console.error(err);
+  console.log(res.rows);
+});
 @Module({
   imports: [
     ConfigModule.forRoot({
