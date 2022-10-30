@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -11,7 +11,7 @@ export class AppController {
   }
 
   @Get('tasks')
-  getTasks() {
-    return this.appService.getTasks();
+  getTasks(@Query('limit') limit: number, @Query('offset') offset: number) {
+    return this.appService.getTasks(limit, offset);
   }
 }
