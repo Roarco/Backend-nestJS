@@ -17,4 +17,11 @@ export default registerAs('configuration', () => ({
     name: process.env.DATABASE_NAME,
     port: parseInt(process.env.DATABASE_PORT, 10),
   },
+  postgres: {
+    db: process.env.POSTGRES_DB,
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    port: parseInt(process.env.POSTGRES_PORT, 10),
+    host: process.env.POSTGRES_HOST,
+  },
 }));
