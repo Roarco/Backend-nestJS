@@ -96,21 +96,16 @@ export class UsersService {
   }
 
   /**
-   * This method find orders by user in the database
-   * @param id
-   * @returns {Order[]}
+   * It finds a user by id, then returns an order object with the user, a date, and a list of products
+   * @param {number} id - number - The id of the user we want to find
+   * @returns An object with a date, user, and products.
    */
-
-  findOrdersByUser(id: number): Order[] {
+  async findOrdersByUser(id: number): Promise<Order> {
     const user = this.findOne(id);
-    const orders = [
-      {
-        id: 1,
-        date: new Date(),
-        user: user,
-        products: this.productsService.findAll(10, 0),
-      },
-    ];
-    return orders;
+    return {
+      date: new Date(),
+      user,
+      products: await this.productsService.findAll(50, 0),
+    };
   }
 }

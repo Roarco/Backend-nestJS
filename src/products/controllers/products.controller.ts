@@ -9,14 +9,16 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
   //ParseIntPipe, // <-- pipe de nestjs
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import { ParseIntPipe } from '../../common/parse-int.pipe'; // <-- pipe custom
+//import { ParseIntPipe } from '../../common/parse-int.pipe'; // <-- pipe custom
 import { ProductsService } from '../services/products.service';
 import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
+import { number } from 'joi';
 
 @ApiTags('Products')
 @Controller('products')
@@ -26,17 +28,20 @@ export class ProductsController {
   @ApiOperation({ summary: 'Get all products' })
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll(@Query('limit') limit = 5, @Query('offset') offset = 0): Product[] {
+  getAll(
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+  ): Promise<Product[]> {
     return this.productsService.findAll(limit, offset);
   }
 
   @ApiOperation({ summary: 'Get product by id' })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getOne(@Param('id', ParseIntPipe) id: number): Product {
+  getOne(@Param('id', ParseUUIDPipe) id: string): Promise<Product> {
     return this.productsService.findOne(id);
   }
-
+  /*
   @ApiOperation({ summary: 'Create a product' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -59,5 +64,5 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   delete(@Param('id', ParseIntPipe) id: number): boolean {
     return this.productsService.delete(id);
-  }
+  } */
 }

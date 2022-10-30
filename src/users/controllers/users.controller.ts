@@ -39,7 +39,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get orders by user id' })
   @Get(':id/orders')
   @HttpCode(HttpStatus.OK)
-  getOrdersByUser(@Param('id', ParseIntPipe) id: number): Order[] {
+  getOrdersByUser(@Param('id', ParseIntPipe) id: number): Promise<Order> {
     return this.usersService.findOrdersByUser(id);
   }
 
