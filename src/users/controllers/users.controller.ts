@@ -6,7 +6,7 @@ import {
   Param,
   Post,
   Put,
-  ParseIntPipe,
+  ParseUUIDPipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -25,18 +25,18 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users' })
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll(): User[] {
+  getAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   @ApiOperation({ summary: 'Get user by id' })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getOne(@Param('id', ParseIntPipe) id: number): User {
+  getOne(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
     return this.usersService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Get orders by user id' })
+  /* @ApiOperation({ summary: 'Get orders by user id' })
   @Get(':id/orders')
   @HttpCode(HttpStatus.OK)
   getOrdersByUser(@Param('id', ParseIntPipe) id: number): Promise<Order> {
@@ -64,5 +64,5 @@ export class UsersController {
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number): boolean {
     return this.usersService.delete(id);
-  }
+  } */
 }

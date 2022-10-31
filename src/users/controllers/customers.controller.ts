@@ -8,7 +8,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  ParseIntPipe,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
@@ -24,18 +24,18 @@ export class CostumersController {
   @ApiOperation({ summary: 'Get all customers' })
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll(): Customer[] {
+  getAll(): Promise<Customer[]> {
     return this.costumersService.findAll();
   }
 
   @ApiOperation({ summary: 'Get customer by id' })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  getOne(@Param('id', ParseUUIDPipe) id: string): Promise<Customer> {
     return this.costumersService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Create a customer' })
+  /*  @ApiOperation({ summary: 'Create a customer' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() Customes: CreateCustomerDto): Customer {
@@ -57,5 +57,5 @@ export class CostumersController {
   @HttpCode(HttpStatus.OK)
   delete(@Param('id', ParseIntPipe) id: number): boolean {
     return this.costumersService.delete(id);
-  }
+  } */
 }

@@ -1,34 +1,31 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Customer } from '../entities/customer.entity';
 import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customers.dto';
 @Injectable()
 export class CostumesService {
-  private idCount = 1;
-  private customers: Customer[] = [
-    {
-      id: this.idCount,
-      name: 'John',
-      lastname: 'Doe',
-      phone: '3145651757',
-    },
-  ];
+  constructor(
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
+  ) {}
 
   /**
-   * This method find all customers in the database
-   * @returns {Customer[]}
+   * It returns a promise of an array of customers
+   * @returns An array of Customer objects
    */
-  findAll(): Customer[] {
-    return this.customers;
+  async findAll(): Promise<Customer[]> {
+    return await this.customerRepository.find();
   }
 
   /**
-   * This method find one customer in the database
-   * @param id
-   * @returns {Customer}
+   * It finds a customer by id and throws an error if it doesn't exist
+   * @param {string} id - string - The id of the customer we want to find.
+   * @returns A customer object
    */
-  findOne(id: number): Customer {
-    const customer = this.customers.find((c) => c.id === id);
+  async findOne(id: string): Promise<Customer> {
+    const customer = await this.customerRepository.findOne({ where: { id } });
 
     if (!customer) {
       throw new NotFoundException(`Customer #${id} not found`);
@@ -36,12 +33,7 @@ export class CostumesService {
     return customer;
   }
 
-  /**
-   * This method creates a new customer in the database
-   * @param customer
-   * @returns {Customer}
-   */
-  create(customer: CreateCustomerDto): Customer {
+  /*  create(customer: CreateCustomerDto): Customer {
     this.idCount = this.idCount + 1;
     const newCustomer = {
       id: this.idCount,
@@ -51,12 +43,7 @@ export class CostumesService {
     return newCustomer;
   }
 
-  /**
-   * This method updates a customer in the database
-   * @param id
-   * @param customer
-   * @returns {Customer}
-   */
+
   update(id: number, customer: UpdateCustomerDto): Customer {
     const index = this.customers.findIndex((item) => item.id === id);
 
@@ -70,11 +57,6 @@ export class CostumesService {
     return this.customers[index];
   }
 
-  /**
-   * This method removes a customer in the database
-   * @param id
-   * @returns {boolean}
-   */
   delete(id: number): boolean {
     const index = this.customers.findIndex((item) => item.id === id);
 
@@ -83,5 +65,5 @@ export class CostumesService {
     }
     this.customers.splice(index, 1);
     return true;
-  }
+  } */
 }

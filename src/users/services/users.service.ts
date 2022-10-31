@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 //import { ConfigService } from '@nestjs/config';
+
 import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
@@ -9,47 +12,31 @@ import { ProductsService } from '../../products/services/products.service';
 export class UsersService {
   constructor(
     private productsService: ProductsService, //private configService: ConfigService,
+    @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  private idCount = 1;
-  private users: User[] = [
-    {
-      id: this.idCount,
-      name: 'John Doe',
-      email: 'Joan@gmail.com',
-      password: 'jonsito123456789',
-      role: 'admin',
-    },
-  ];
-
   /**
-   * This method find all users in the database
-   * @returns {User[]}
+   * It returns a promise that resolves to an array of users
+   * @returns An array of users
    */
-  findAll(): User[] {
-    return this.users;
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 
   /**
-   * This method find one user in the database
-   * @param id
-   * @returns {User}
+   * It finds a user by id, and if it doesn't find one, it throws a NotFoundException
+   * @param {string} id - string - The id of the user we want to find.
+   * @returns A user object
    */
-  findOne(id: number): User {
-    const user = this.users.find((user) => user.id === id);
+  async findOne(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
     }
     return user;
   }
 
-  /**
-   * This method creates a new user in the database
-   * @param user
-   * @returns {User}
-   */
-
-  create(user: CreateUserDto): User {
+  /* create(user: CreateUserDto): User {
     this.idCount = this.idCount + 1;
     const newUser = {
       id: this.idCount,
@@ -59,12 +46,6 @@ export class UsersService {
     return newUser;
   }
 
-  /**
-   * This method updates a user in the database
-   * @param id
-   * @param user
-   * @returns {User}
-   */
 
   update(id: number, user: UpdateUserDto): User {
     const index = this.users.findIndex((item) => item.id === id);
@@ -79,11 +60,6 @@ export class UsersService {
     return this.users[index];
   }
 
-  /**
-   * This method deletes a user in the database
-   * @param id
-   * @returns {boolean}
-   */
 
   delete(id: number): boolean {
     const index = this.users.findIndex((item) => item.id === id);
@@ -95,11 +71,7 @@ export class UsersService {
     return true;
   }
 
-  /**
-   * It finds a user by id, then returns an order object with the user, a date, and a list of products
-   * @param {number} id - number - The id of the user we want to find
-   * @returns An object with a date, user, and products.
-   */
+
   async findOrdersByUser(id: number): Promise<Order> {
     const user = this.findOne(id);
     return {
@@ -107,5 +79,5 @@ export class UsersService {
       user,
       products: await this.productsService.findAll(50, 0),
     };
-  }
+  } */
 }
