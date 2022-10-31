@@ -13,7 +13,7 @@ export class CreateUserDto {
   @IsEmail()
   readonly email: string;
 
-  @ApiProperty({ example: '123456' })
+  @ApiProperty({ example: '12345678' })
   @IsNotEmpty()
   @IsString()
   @Length(8, 16)

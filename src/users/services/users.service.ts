@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 //import { ConfigService } from '@nestjs/config';
@@ -31,47 +31,45 @@ export class UsersService {
   async findOne(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException(`User #${id} not found`);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return user;
   }
 
-  /* create(user: CreateUserDto): User {
-    this.idCount = this.idCount + 1;
-    const newUser = {
-      id: this.idCount,
-      ...user,
-    };
-    this.users.push(newUser);
-    return newUser;
-  }
+  /**
+   * It creates a new user and saves it to the database
+   * @param {CreateUserDto} user - CreateUserDto - This is the user object that we are creating.
+   * @returns The user that was created.
+   */
+  async create(user: CreateUserDto): Promise<User> {
+    const userExists = await this.usersRepository.findOne({
+      where: { email: user.email },
+    });
 
-
-  update(id: number, user: UpdateUserDto): User {
-    const index = this.users.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      throw new NotFoundException(`User #${id} not found`);
+    if (userExists) {
+      throw new HttpException('Email already exists', HttpStatus.CONFLICT);
     }
-    this.users[index] = {
-      ...this.users[index],
-      ...user,
-    };
-    return this.users[index];
+    const newUser = this.usersRepository.create(user);
+    return await this.usersRepository.save(newUser);
   }
 
+  /**
+   * We're updating a user by id, and returning the updated user
+   * @param {string} id - string - The id of the user we want to update.
+   * @param {UpdateUserDto} user - UpdateUserDto - This is the DTO that we created earlier.
+   * @returns The updated user
+   */
+  async update(id: string, user: UpdateUserDto): Promise<User> {
+    const userExists = await this.usersRepository.findOne({ where: { id } });
 
-  delete(id: number): boolean {
-    const index = this.users.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      throw new NotFoundException(`User #${id} not found`);
+    if (!userExists) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    this.users.splice(index, 1);
-    return true;
+    await this.usersRepository.update(id, user);
+    return await this.usersRepository.findOne({ where: { id } });
   }
 
-
+  /*
   async findOrdersByUser(id: number): Promise<Order> {
     const user = this.findOne(id);
     return {
@@ -80,4 +78,18 @@ export class UsersService {
       products: await this.productsService.findAll(50, 0),
     };
   } */
+
+  /**
+   * It finds a user by id, throws an error if the user is not found, and deletes the user if it is
+   * found
+   * @param {string} id - The id of the user to be deleted.
+   * @returns The user object
+   */
+  async delete(id: string): Promise<any> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return await this.usersRepository.delete(id);
+  }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -28,42 +28,44 @@ export class CostumesService {
     const customer = await this.customerRepository.findOne({ where: { id } });
 
     if (!customer) {
-      throw new NotFoundException(`Customer #${id} not found`);
+      throw new HttpException('Customer not found', HttpStatus.NOT_FOUND);
     }
     return customer;
   }
 
-  /*  create(customer: CreateCustomerDto): Customer {
-    this.idCount = this.idCount + 1;
-    const newCustomer = {
-      id: this.idCount,
-      ...customer,
-    };
-    this.customers.push(newCustomer);
-    return newCustomer;
+  async create(customer: CreateCustomerDto): Promise<Customer> {
+    const costumeExists = await this.customerRepository.findOne({
+      where: { phone: customer.phone },
+    });
+
+    if (costumeExists) {
+      throw new HttpException('Phone already exists', HttpStatus.CONFLICT);
+    }
+
+    const newCustomer = this.customerRepository.create(customer);
+    return await this.customerRepository.save(newCustomer);
   }
 
+  async update(id: string, customer: UpdateCustomerDto): Promise<Customer> {
+    const costumeExists = await this.customerRepository.findOne({
+      where: { id },
+    });
 
-  update(id: number, customer: UpdateCustomerDto): Customer {
-    const index = this.customers.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      throw new NotFoundException(`Customer #${id} not found`);
+    if (!costumeExists) {
+      throw new HttpException('Customer not found', HttpStatus.NOT_FOUND);
     }
-    this.customers[index] = {
-      ...this.customers[index],
-      ...customer,
-    };
-    return this.customers[index];
+    await this.customerRepository.update(id, customer);
+    return await this.customerRepository.findOne({ where: { id } });
   }
 
-  delete(id: number): boolean {
-    const index = this.customers.findIndex((item) => item.id === id);
+  async delete(id: string): Promise<any> {
+    const costumeExists = await this.customerRepository.findOne({
+      where: { id },
+    });
 
-    if (index === -1) {
-      throw new NotFoundException(`Customer #${id} not found`);
+    if (!costumeExists) {
+      throw new HttpException('Customer not found', HttpStatus.NOT_FOUND);
     }
-    this.customers.splice(index, 1);
-    return true;
-  } */
+    return await this.customerRepository.delete(id);
+  }
 }

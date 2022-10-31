@@ -35,10 +35,10 @@ export class CostumersController {
     return this.costumersService.findOne(id);
   }
 
-  /*  @ApiOperation({ summary: 'Create a customer' })
+  @ApiOperation({ summary: 'Create a customer' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() Customes: CreateCustomerDto): Customer {
+  create(@Body() Customes: CreateCustomerDto): Promise<Customer> {
     return this.costumersService.create(Customes);
   }
 
@@ -46,16 +46,16 @@ export class CostumersController {
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() customes: UpdateCustomerDto,
-  ): Customer {
+  ): Promise<Customer> {
     return this.costumersService.update(id, customes);
   }
 
   @ApiOperation({ summary: 'Delete a customer' })
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  delete(@Param('id', ParseIntPipe) id: number): boolean {
+  delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     return this.costumersService.delete(id);
-  } */
+  }
 }

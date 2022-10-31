@@ -36,17 +36,10 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  /* @ApiOperation({ summary: 'Get orders by user id' })
-  @Get(':id/orders')
-  @HttpCode(HttpStatus.OK)
-  getOrdersByUser(@Param('id', ParseIntPipe) id: number): Promise<Order> {
-    return this.usersService.findOrdersByUser(id);
-  }
-
   @ApiOperation({ summary: 'Create user' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() user: CreateUserDto): User {
+  create(@Body() user: CreateUserDto): Promise<User> {
     return this.usersService.create(user);
   }
 
@@ -54,15 +47,22 @@ export class UsersController {
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() category: UpdateUserDto,
-  ): User {
-    return this.usersService.update(id, category);
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() user: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.update(id, user);
   }
+  /* @ApiOperation({ summary: 'Get orders by user id' })
+  @Get(':id/orders')
+  @HttpCode(HttpStatus.OK)
+  getOrdersByUser(@Param('id', ParseIntPipe) id: number): Promise<Order> {
+    return this.usersService.findOrdersByUser(id);
+  }
+ */
 
   @ApiOperation({ summary: 'Delete user' })
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number): boolean {
+  delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     return this.usersService.delete(id);
-  } */
+  }
 }

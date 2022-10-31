@@ -12,7 +12,7 @@ export class CreateCustomerDto {
   @IsString()
   readonly lastname: string;
 
-  @ApiProperty({ example: '356456456' })
+  @ApiProperty({ example: '3125689652' })
   @IsNotEmpty()
   @IsString()
   @IsPhoneNumber('CO')
