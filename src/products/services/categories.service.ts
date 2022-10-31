@@ -1,48 +1,38 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Category } from '../entities/category.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/categories.dto';
 @Injectable()
 export class CategoriesService {
-  private idCount = 1;
-
-  private categories: Category[] = [
-    {
-      id: this.idCount,
-      name: 'Bebidas',
-      description: 'Bebidas',
-      image:
-        'https://www.coca-cola.es/content/dam/journey/es/es/private/2018/01/31/1517415600000-coca-cola-1-5l.png',
-    },
-  ];
+  constructor(
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
+  ) {}
 
   /**
-   * This method find all categories in the database
-   * @returns {Category[]}
+   * It returns a promise of an array of Category objects
+   * @returns An array of Category objects
    */
-  findAll(): Category[] {
-    return this.categories;
+  async findAll(): Promise<Category[]> {
+    return this.categoryRepository.find();
   }
 
   /**
-   * This method find one category in the database
-   * @param id
-   * @returns {Category}
+   * It finds a category by its id and throws an error if it doesn't exist
+   * @param {string} id - string - The id of the category we want to find.
+   * @returns A category object
    */
-  findOne(id: number): Category {
-    const category = this.categories.find((item) => item.id === id);
+  async findOne(id: string): Promise<Category> {
+    const category = await this.categoryRepository.findOne({ where: { id } });
     if (!category) {
       throw new NotFoundException(`Category #${id} not found`);
     }
     return category;
   }
 
-  /**
-   * This method creates a new category in the database
-   * @param category
-   * @returns {Category}
-   * @returns {Category}
-   */
+  /*   
   create(category: CreateCategoryDto): Category {
     this.idCount = this.idCount + 1;
     const newCategory = {
@@ -53,12 +43,7 @@ export class CategoriesService {
     return newCategory;
   }
 
-  /**
-   * This method updates a category in the database
-   * @param id
-   * @param category
-   * @returns {Category}
-   */
+ 
   update(id: number, category: UpdateCategoryDto): Category {
     const index = this.categories.findIndex((item) => item.id === id);
     if (index === -1) {
@@ -71,11 +56,7 @@ export class CategoriesService {
     return this.categories[index];
   }
 
-  /**
-   * This method removes a category in the database
-   * @param id
-   * @returns {boolean}
-   */
+
   delete(id: number): boolean {
     const index = this.categories.findIndex((item) => item.id === id);
     if (index === -1) {
@@ -83,5 +64,5 @@ export class CategoriesService {
     }
     this.categories.splice(index, 1);
     return true;
-  }
+  } */
 }

@@ -6,9 +6,9 @@ import {
   Param,
   Post,
   Put,
-  ParseIntPipe,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
@@ -23,17 +23,17 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Get all categories' })
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll(): Category[] {
+  getAll(): Promise<Category[]> {
     return this.categoriesService.findAll();
   }
 
   @ApiOperation({ summary: 'Get category by id' })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getOne(@Param('id', ParseIntPipe) id: number): Category {
+  getOne(@Param('id', ParseUUIDPipe) id: string): Promise<Category> {
     return this.categoriesService.findOne(id);
   }
-
+  /*
   @ApiOperation({ summary: 'Create category' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -54,5 +54,5 @@ export class CategoriesController {
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number): boolean {
     return this.categoriesService.delete(id);
-  }
+  } */
 }

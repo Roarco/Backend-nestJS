@@ -19,8 +19,8 @@ const API_key_PROD = 'Prod54564654';
           username: user,
           password,
           database: db,
+          entities: [__dirname + '/../**/*.entity.{js,ts}'],
           synchronize: true,
-          autoLoadEntities: true,
         };
       },
     }),

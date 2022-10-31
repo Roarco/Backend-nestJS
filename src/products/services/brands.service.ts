@@ -1,36 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Brand } from '../entities/brand.entity';
 import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dto';
 @Injectable()
 export class BrandsService {
-  private idCount = 1;
-  private brands: Brand[] = [
-    {
-      id: this.idCount,
-      name: 'Coca Cola',
-      description:
-        'Coca Cola is a brand of soft drink, manufactured and marketed by PepsiCo.',
-      image:
-        'https://www.coca-cola.es/content/dam/journey/es/es/private/2018/01/31/1517415600000-coca-cola-1-5l.png',
-    },
-  ];
+  constructor(
+    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
+  ) {}
 
   /**
-   * This method find all brands in the database
-   * @returns {Brand[]}
+   * It returns a promise of an array of Brand objects
+   * @returns An array of Brand objects
    */
-  findAll(): Brand[] {
-    return this.brands;
+  async findAll(): Promise<Brand[]> {
+    return await this.brandRepository.find();
   }
 
   /**
-   * This method find one brand in the database
-   * @param id
-   * @returns {Brand}
+   * It finds a brand by its ID and throws an error if it doesn't exist
+   * @param {string} id - string - The id of the brand we want to find.
+   * @returns A brand object
    */
-  findOne(id: number): Brand {
-    const brand = this.brands.find((item) => item.id === id);
+  async findOne(id: string): Promise<Brand> {
+    const brand = await this.brandRepository.findOne({ where: { id } });
 
     if (!brand) {
       throw new NotFoundException(`Brand #${id} not found`);
@@ -38,12 +32,7 @@ export class BrandsService {
     return brand;
   }
 
-  /**
-   * This method creates a new brand in the database
-   * @param brand
-   * @returns {Brand}
-   */
-  create(brand: CreateBrandDto): Brand {
+  /*  create(brand: CreateBrandDto): Brand {
     this.idCount = this.idCount + 1;
     const newBrand = {
       id: this.idCount,
@@ -51,15 +40,9 @@ export class BrandsService {
     };
     this.brands.push(newBrand);
     return newBrand;
-  }
+  } */
 
-  /**
-   * This method updates a brand in the database
-   * @param id
-   * @param brand
-   * @returns {Brand}
-   */
-  update(id: number, brand: UpdateBrandDto): Brand {
+  /* update(id: number, brand: UpdateBrandDto): Brand {
     const index = this.brands.findIndex((item) => item.id === id);
 
     if (index === -1) {
@@ -70,14 +53,9 @@ export class BrandsService {
       ...brand,
     };
     return this.brands[index];
-  }
+  } */
 
-  /**
-   * This method removes a brand in the database
-   * @param id
-   * @returns {boolean}
-   */
-  delete(id: number): boolean {
+  /* delete(id: number): boolean {
     const index = this.brands.findIndex((item) => item.id === id);
 
     if (index === -1) {
@@ -85,5 +63,5 @@ export class BrandsService {
     }
     this.brands.splice(index, 1);
     return true;
-  }
+  } */
 }
