@@ -35,10 +35,10 @@ export class BrandsController {
     return this.brandsService.findOne(id);
   }
 
-  /* @ApiOperation({ summary: 'Create a brand' })
+  @ApiOperation({ summary: 'Create a brand' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() brand: CreateBrandDto): Brand {
+  create(@Body() brand: CreateBrandDto): Promise<Brand> {
     return this.brandsService.create(brand);
   }
 
@@ -46,16 +46,16 @@ export class BrandsController {
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() brand: UpdateBrandDto,
-  ): Brand {
+  ): Promise<Brand> {
     return this.brandsService.update(id, brand);
   }
 
   @ApiOperation({ summary: 'Delete a brand' })
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  delete(@Param('id', ParseIntPipe) id: number): boolean {
+  delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     return this.brandsService.delete(id);
-  } */
+  }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -33,56 +33,49 @@ export class ProductsService {
   async findOne(id: string): Promise<Product> {
     const product = await this.productRepository.findOneBy({ id });
     if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
+      throw new HttpException(`Product not found`, HttpStatus.NOT_FOUND);
     }
     return product;
   }
 
-  /**
-   * This method creates a new product in the database
-   * @param {CreateProductDto} product - The product to create
-   * @returns {Product}
-   */
-  /* create(product: CreateProductDto): Product {
-    this.idCount = this.idCount + 1;
-    const newProduct = {
-      id: this.idCount,
-      ...product,
-    };
-    this.products.push(newProduct);
-    return newProduct;
-  } */
+  async create(product: CreateProductDto): Promise<Product> {
+    const productExists = await this.productRepository.findOne({
+      where: { name: product.name },
+    });
 
-  /**
-   * This method updates a product in the database
-   * @param {number} id - The id of the product
-   * @param {UpdateProductDto} product - The product to update
-   * @returns {Product}
-   */
-  /* update(id: number, product: UpdateProductDto): Product {
-    const index = this.products.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      throw new NotFoundException(`Product #${id} not found`);
+    if (productExists) {
+      throw new HttpException(
+        `Product ${product.name} already exists`,
+        HttpStatus.CONFLICT,
+      );
     }
-    this.products[index] = {
-      ...this.products[index],
-      ...product,
-    };
-    return this.products[index];
-  } */
 
-  /**
-   * This method removes a product in the database
-   * @param {number} id - The id of the product
-   */
-  /* delete(id: number): boolean {
-    const index = this.products.findIndex((item) => item.id === id);
+    const newProduct = this.productRepository.create(product);
+    return await this.productRepository.save(newProduct);
+  }
 
-    if (index === -1) {
-      throw new NotFoundException(`Product #${id} not found`);
+  async update(id: string, product: UpdateProductDto): Promise<Product> {
+    const productExists = await this.productRepository.findOne({
+      where: { id },
+    });
+
+    if (!productExists) {
+      throw new HttpException(`Product not found`, HttpStatus.NOT_FOUND);
     }
-    this.products.splice(index, 1);
-    return true;
-  } */
+
+    await this.productRepository.update(id, product);
+    return await this.productRepository.findOne({ where: { id } });
+  }
+
+  async delete(id: string): Promise<any> {
+    const productExists = await this.productRepository.findOne({
+      where: { id },
+    });
+
+    if (!productExists) {
+      throw new HttpException(`Product not found`, HttpStatus.NOT_FOUND);
+    }
+
+    return await this.productRepository.delete(id);
+  }
 }

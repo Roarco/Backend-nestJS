@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -27,42 +27,60 @@ export class CategoriesService {
   async findOne(id: string): Promise<Category> {
     const category = await this.categoryRepository.findOne({ where: { id } });
     if (!category) {
-      throw new NotFoundException(`Category #${id} not found`);
+      throw new HttpException(`Category not found`, HttpStatus.NOT_FOUND);
     }
     return category;
   }
 
-  /*   
-  create(category: CreateCategoryDto): Category {
-    this.idCount = this.idCount + 1;
-    const newCategory = {
-      id: this.idCount,
-      ...category,
-    };
-    this.categories.push(newCategory);
-    return newCategory;
+  /**
+   * It creates a new category if it doesn't already exist
+   * @param {CreateCategoryDto} category - CreateCategoryDto - this is the data that will be passed to
+   * the service.
+   * @returns The category that was created.
+   */
+  async create(category: CreateCategoryDto): Promise<Category> {
+    const categoryExists = await this.categoryRepository.findOne({
+      where: { name: category.name },
+    });
+
+    if (categoryExists) {
+      throw new HttpException(
+        `Category ${category.name} already exists`,
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    const newCategory = this.categoryRepository.create(category);
+    return await this.categoryRepository.save(newCategory);
   }
 
- 
-  update(id: number, category: UpdateCategoryDto): Category {
-    const index = this.categories.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Category #${id} not found`);
+  /**
+   * It updates a category by id
+   * @param {string} id - The id of the category to be updated.
+   * @param {UpdateCategoryDto} category - UpdateCategoryDto - This is the DTO that we created earlier.
+   * @returns The updated category
+   */
+  async update(id: string, category: UpdateCategoryDto): Promise<Category> {
+    const categoryExists = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!categoryExists) {
+      throw new HttpException(`Category not found`, HttpStatus.NOT_FOUND);
     }
-    this.categories[index] = {
-      ...this.categories[index],
-      ...category,
-    };
-    return this.categories[index];
+    await this.categoryRepository.update(id, category);
+    return await this.categoryRepository.findOne({ where: { id } });
   }
 
+  async delete(id: string): Promise<any> {
+    const categoryExists = await this.categoryRepository.findOne({
+      where: { id },
+    });
 
-  delete(id: number): boolean {
-    const index = this.categories.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Category #${id} not found`);
+    if (!categoryExists) {
+      throw new HttpException(`Category not found`, HttpStatus.NOT_FOUND);
     }
-    this.categories.splice(index, 1);
-    return true;
-  } */
+
+    return await this.categoryRepository.delete(id);
+  }
 }

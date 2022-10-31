@@ -18,7 +18,6 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ProductsService } from '../services/products.service';
 import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
-import { number } from 'joi';
 
 @ApiTags('Products')
 @Controller('products')
@@ -41,11 +40,11 @@ export class ProductsController {
   getOne(@Param('id', ParseUUIDPipe) id: string): Promise<Product> {
     return this.productsService.findOne(id);
   }
-  /*
+
   @ApiOperation({ summary: 'Create a product' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() product: CreateProductDto): Product {
+  create(@Body() product: CreateProductDto): Promise<Product> {
     return this.productsService.create(product);
   }
 
@@ -53,16 +52,16 @@ export class ProductsController {
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() product: UpdateProductDto,
-  ): Product {
+  ): Promise<Product> {
     return this.productsService.update(id, product);
   }
 
   @ApiOperation({ summary: 'Delete a product' })
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  delete(@Param('id', ParseIntPipe) id: number): boolean {
+  delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     return this.productsService.delete(id);
-  } */
+  }
 }

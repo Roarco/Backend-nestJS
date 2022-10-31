@@ -33,26 +33,26 @@ export class CategoriesController {
   getOne(@Param('id', ParseUUIDPipe) id: string): Promise<Category> {
     return this.categoriesService.findOne(id);
   }
-  /*
+
   @ApiOperation({ summary: 'Create category' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() category: CreateCategoryDto): Category {
+  create(@Body() category: CreateCategoryDto): Promise<Category> {
     return this.categoriesService.create(category);
   }
 
   @ApiOperation({ summary: 'Update category' })
   @Put(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() category: UpdateCategoryDto,
-  ): Category {
+  ): Promise<Category> {
     return this.categoriesService.update(id, category);
   }
 
   @ApiOperation({ summary: 'Delete category' })
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number): boolean {
+  delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     return this.categoriesService.delete(id);
-  } */
+  }
 }

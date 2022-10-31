@@ -7,7 +7,7 @@ export class Brand {
   id: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   name: string;
 
   @ApiProperty()

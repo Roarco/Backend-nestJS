@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -27,41 +27,62 @@ export class BrandsService {
     const brand = await this.brandRepository.findOne({ where: { id } });
 
     if (!brand) {
-      throw new NotFoundException(`Brand #${id} not found`);
+      throw new HttpException(`Brand not found`, HttpStatus.NOT_FOUND);
     }
     return brand;
   }
 
-  /*  create(brand: CreateBrandDto): Brand {
-    this.idCount = this.idCount + 1;
-    const newBrand = {
-      id: this.idCount,
-      ...brand,
-    };
-    this.brands.push(newBrand);
-    return newBrand;
-  } */
+  /**
+   * It creates a new brand if it doesn't already exist
+   * @param {CreateBrandDto} brand - CreateBrandDto - this is the data that will be passed to the
+   * function.
+   * @returns The brand that was created.
+   */
+  async create(brand: CreateBrandDto): Promise<Brand> {
+    const brandExists = await this.brandRepository.findOne({
+      where: { name: brand.name },
+    });
 
-  /* update(id: number, brand: UpdateBrandDto): Brand {
-    const index = this.brands.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      throw new NotFoundException(`Brand #${id} not found`);
+    if (brandExists) {
+      throw new HttpException(
+        `Brand ${brand.name} already exists`,
+        HttpStatus.CONFLICT,
+      );
     }
-    this.brands[index] = {
-      ...this.brands[index],
-      ...brand,
-    };
-    return this.brands[index];
-  } */
 
-  /* delete(id: number): boolean {
-    const index = this.brands.findIndex((item) => item.id === id);
+    const newBrand = this.brandRepository.create(brand);
+    return await this.brandRepository.save(newBrand);
+  }
 
-    if (index === -1) {
-      throw new NotFoundException(`Brand #${id} not found`);
+  /**
+   * We're updating a brand by id, and returning the updated brand
+   * @param {string} id - The id of the brand to update
+   * @param {UpdateBrandDto} brand - UpdateBrandDto - This is the data that we will be updating the
+   * brand with.
+   * @returns The updated brand
+   */
+  async update(id: string, brand: UpdateBrandDto): Promise<Brand> {
+    const brandExists = await this.brandRepository.findOne({ where: { id } });
+
+    if (!brandExists) {
+      throw new HttpException(`Brand not found`, HttpStatus.NOT_FOUND);
     }
-    this.brands.splice(index, 1);
-    return true;
-  } */
+
+    await this.brandRepository.update(id, brand);
+    return await this.brandRepository.findOne({ where: { id } });
+  }
+
+  /**
+   * It deletes a brand by id
+   * @param {string} id - string - The id of the brand to be deleted.
+   * @returns The brand that was deleted.
+   */
+  async delete(id: string): Promise<any> {
+    const brandExists = await this.brandRepository.findOne({ where: { id } });
+
+    if (!brandExists) {
+      throw new HttpException(`Brand not found`, HttpStatus.NOT_FOUND);
+    }
+    return await this.brandRepository.delete(id);
+  }
 }

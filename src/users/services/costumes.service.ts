@@ -33,6 +33,12 @@ export class CostumesService {
     return customer;
   }
 
+  /**
+   * It creates a new customer and saves it to the database
+   * @param {CreateCustomerDto} customer - CreateCustomerDto - This is the data that will be passed to
+   * the function.
+   * @returns The customer that was created.
+   */
   async create(customer: CreateCustomerDto): Promise<Customer> {
     const costumeExists = await this.customerRepository.findOne({
       where: { phone: customer.phone },
@@ -46,6 +52,12 @@ export class CostumesService {
     return await this.customerRepository.save(newCustomer);
   }
 
+  /**
+   * It updates a customer by id, and returns the updated customer
+   * @param {string} id - The id of the customer to update.
+   * @param {UpdateCustomerDto} customer - UpdateCustomerDto - This is the DTO that we created earlier.
+   * @returns The updated customer
+   */
   async update(id: string, customer: UpdateCustomerDto): Promise<Customer> {
     const costumeExists = await this.customerRepository.findOne({
       where: { id },
@@ -58,6 +70,11 @@ export class CostumesService {
     return await this.customerRepository.findOne({ where: { id } });
   }
 
+  /**
+   * It deletes a customer from the database by id
+   * @param {string} id - string - The id of the customer to be deleted
+   * @returns The customerRepository.delete() method is being returned.
+   */
   async delete(id: string): Promise<any> {
     const costumeExists = await this.customerRepository.findOne({
       where: { id },
