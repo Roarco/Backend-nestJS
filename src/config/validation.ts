@@ -11,4 +11,9 @@ export const validationSchema = Joi.object({
   POSTGRES_PASSWORD: Joi.string().required(), //postgres password
   POSTGRES_PORT: Joi.number().required(), //postgres port
   POSTGRES_HOST: Joi.string().required(), //postgres host
+  MYSQL_DATABASE: Joi.string().required(), //mysql database name
+  MYSQL_USER: Joi.string().required(), //mysql user name
+  MYSQL_ROOT_PASSWORD: Joi.string().required(), //mysql password
+  MYSQL_PORT: Joi.number().required(), //mysql port
+  MYSQL_HOST: Joi.string().required(), //mysql host
 });

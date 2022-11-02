@@ -11,9 +11,20 @@ const API_key_PROD = 'Prod54564654';
     TypeOrmModule.forRootAsync({
       inject: [configuration.KEY],
       useFactory: (config: ConfigType<typeof configuration>) => {
-        const { user, host, db, password, port } = config.postgres;
+        //const { user, host, db, password, port } = config.postgres;
+        const { user, host, db, password, port } = config.mysql;
+        // return {
+        //   type: 'postgres',
+        //   host,
+        //   port,
+        //   username: user,
+        //   password,
+        //   database: db,
+        //   entities: [__dirname + '/../**/*.entity.{js,ts}'],
+        //   synchronize: true,
+        // };
         return {
-          type: 'postgres',
+          type: 'mysql',
           host,
           port,
           username: user,
@@ -34,7 +45,7 @@ const API_key_PROD = 'Prod54564654';
     {
       provide: 'PG',
       useFactory: (config: ConfigType<typeof configuration>) => {
-        const { user, host, db, password, port } = config.postgres;
+        /* const { user, host, db, password, port } = config.postgres;
         const client = new Client({
           user,
           host,
@@ -43,7 +54,7 @@ const API_key_PROD = 'Prod54564654';
           port,
         });
         client.connect();
-        return client;
+        return client; */
       },
       inject: [configuration.KEY],
     },
