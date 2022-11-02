@@ -21,7 +21,7 @@ const API_key_PROD = 'Prod54564654';
           password,
           database: db,
           entities: [__dirname + '/../**/*.entity.{js,ts}'],
-          //synchronize: true,
+          synchronize: false,
         };
         // return {
         //   type: 'mysql',
