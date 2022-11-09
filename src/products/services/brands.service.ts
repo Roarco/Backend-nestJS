@@ -19,12 +19,15 @@ export class BrandsService {
   }
 
   /**
-   * It finds a brand by its ID and throws an error if it doesn't exist
+   * It finds a brand by its id and returns it
    * @param {string} id - string - The id of the brand we want to find.
-   * @returns A brand object
+   * @returns The brand with the id that was passed in.
    */
   async findOne(id: string): Promise<Brand> {
-    const brand = await this.brandRepository.findOne({ where: { id } });
+    const brand = await this.brandRepository.findOne({
+      where: { id },
+      relations: ['products'],
+    });
 
     if (!brand) {
       throw new HttpException(`Brand not found`, HttpStatus.NOT_FOUND);

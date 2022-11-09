@@ -4,6 +4,7 @@ import {
   IsString,
   IsUrl,
   IsPositive,
+  IsUUID,
 } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
@@ -38,6 +39,7 @@ export class CreateProductDto {
   @ApiProperty({ example: 'f35029cf-6f44-4cf5-bc55-d4ae1670c7c9' })
   @IsNotEmpty()
   @IsString()
+  @IsUUID()
   readonly brandId: string;
 }
 

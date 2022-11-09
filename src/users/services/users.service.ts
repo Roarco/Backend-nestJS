@@ -71,9 +71,9 @@ export class UsersService {
   }
 
   /**
-   * We're updating a user by id, and returning the updated user
-   * @param {string} id - The id of the user to update
-   * @param {UpdateUserDto} user - UpdateUserDto - This is the DTO that we created earlier.
+   * We're updating a user by id, and we're passing in the user object that we want to update
+   * @param {string} id - string - The id of the user to update
+   * @param {UpdateUserDto} user - UpdateUserDto
    * @returns The updated user
    */
   async update(id: string, user: UpdateUserDto): Promise<User> {
@@ -82,11 +82,16 @@ export class UsersService {
     if (!userExists) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    await this.usersRepository.update(id, user);
-    return await this.usersRepository.findOne({
-      where: { id },
-      relations: ['customer'],
-    });
+
+    if (user.customerId) {
+      const customer = await this.customerService.findOne(user.customerId);
+      if (!customer) {
+        throw new HttpException('Customer not found', HttpStatus.NOT_FOUND);
+      }
+      userExists.customer = customer;
+    }
+    await this.usersRepository.merge(userExists, user);
+    return await this.usersRepository.save(userExists);
   }
 
   /*
