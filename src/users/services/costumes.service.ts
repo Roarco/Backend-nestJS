@@ -16,7 +16,7 @@ export class CostumesService {
    * @returns An array of Customer objects
    */
   async findAll(): Promise<Customer[]> {
-    return await this.customerRepository.find();
+    return await this.customerRepository.find({ relations: ['user'] });
   }
 
   /**

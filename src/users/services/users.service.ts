@@ -7,29 +7,36 @@ import { User } from '../entities/user.entity';
 //import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { ProductsService } from '../../products/services/products.service';
-
+import { CostumesService } from './costumes.service';
 @Injectable()
 export class UsersService {
   constructor(
     private productsService: ProductsService, //private configService: ConfigService,
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private customerService: CostumesService,
   ) {}
 
   /**
-   * It returns a promise that resolves to an array of users
-   * @returns An array of users
+   * It returns a promise of an array of users, and it uses the usersRepository to find all users, and
+   * it also returns the customer relation
+   * @returns An array of users with their customer relations
    */
   async findAll(): Promise<User[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      relations: ['customer'],
+    });
   }
 
   /**
-   * It finds a user by id, and if it doesn't find one, it throws a NotFoundException
+   * It finds a user by id and returns it
    * @param {string} id - string - The id of the user we want to find.
-   * @returns A user object
+   * @returns The user object
    */
   async findOne(id: string): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['customer'],
+    });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -37,8 +44,11 @@ export class UsersService {
   }
 
   /**
-   * It creates a new user and saves it to the database
-   * @param {CreateUserDto} user - CreateUserDto - This is the user object that we are creating.
+   * We're creating a new user, but first we're checking if the user already exists. If the user
+   * exists, we throw an error. If the user doesn't exist, we create a new user and save it to the
+   * database
+   * @param {CreateUserDto} user - CreateUserDto - This is the object that will be passed to the
+   * method.
    * @returns The user that was created.
    */
   async create(user: CreateUserDto): Promise<User> {
@@ -50,12 +60,19 @@ export class UsersService {
       throw new HttpException('Email already exists', HttpStatus.CONFLICT);
     }
     const newUser = this.usersRepository.create(user);
+    const costumer = await this.customerService.findOne(user.customerId);
+
+    if (!costumer) {
+      throw new HttpException('Customer not found', HttpStatus.NOT_FOUND);
+    }
+
+    newUser.customer = costumer;
     return await this.usersRepository.save(newUser);
   }
 
   /**
    * We're updating a user by id, and returning the updated user
-   * @param {string} id - string - The id of the user we want to update.
+   * @param {string} id - The id of the user to update
    * @param {UpdateUserDto} user - UpdateUserDto - This is the DTO that we created earlier.
    * @returns The updated user
    */
@@ -66,7 +83,10 @@ export class UsersService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     await this.usersRepository.update(id, user);
-    return await this.usersRepository.findOne({ where: { id } });
+    return await this.usersRepository.findOne({
+      where: { id },
+      relations: ['customer'],
+    });
   }
 
   /*
