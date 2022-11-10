@@ -4,13 +4,16 @@ import { Repository } from 'typeorm';
 
 import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
-import { BrandsService } from './brands.service';
+import { Brand } from '../entities/brand.entity';
+import { Category } from '../entities/category.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
-    private brandsService: BrandsService,
+    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
   ) {}
 
   /**
@@ -24,7 +27,6 @@ export class ProductsService {
     const products = await this.productRepository.find({
       take: limit,
       skip: offset,
-      relations: ['brand'],
     });
     return products;
   }
@@ -37,7 +39,7 @@ export class ProductsService {
   async findOne(id: string): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: ['brand'],
+      relations: ['brand', 'categories'],
     });
     if (!product) {
       throw new HttpException(`Product not found`, HttpStatus.NOT_FOUND);
@@ -47,7 +49,7 @@ export class ProductsService {
 
   /**
    * We're creating a new product, but first we're checking if the product already exists. If it does,
-   * we throw an error. If it doesn't, we create a new product, find the brand, and save the product
+   * we throw an error. If it doesn't, we create a new product, find the brand, find the categories, and save the product
    * @param {CreateProductDto} product - CreateProductDto - This is the product object that we are
    * creating.
    * @returns The product that was created.
@@ -65,20 +67,31 @@ export class ProductsService {
     }
 
     const newProduct = this.productRepository.create(product);
-    const brand = await this.brandsService.findOne(product.brandId);
+    const brand = await this.brandRepository.findOne(product.brandId);
+    const categories = await this.categoriesRepository.findByIds(
+      product.categoryIds,
+    );
 
     if (!brand) {
       throw new HttpException(`Brand not found`, HttpStatus.NOT_FOUND);
     }
 
+    if (categories.length !== product.categoryIds.length) {
+      throw new HttpException(
+        `Some categories were not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     newProduct.brand = brand;
+    newProduct.categories = categories;
     return await this.productRepository.save(newProduct);
   }
 
   /**
    * We first check if the product exists, if it does, we check if the brandId is passed in the request
    * body, if it is, we check if the brand exists, if it does, we set the brand of the product to the
-   * brand we found, then we merge the productExists with the product, and finally we save the product
+   * brand we found and categories, then we merge the productExists with the product, and finally we save the product
    * @param {string} id - The id of the product to be updated.
    * @param {UpdateProductDto} product - UpdateProductDto - This is the DTO that we created earlier.
    * @returns The updated product
@@ -93,14 +106,27 @@ export class ProductsService {
     }
 
     if (product.brandId) {
-      const brand = await this.brandsService.findOne(product.brandId);
+      const brand = await this.brandRepository.findOne(product.brandId);
       if (!brand) {
         throw new HttpException(`Brand not found`, HttpStatus.NOT_FOUND);
       }
       productExists.brand = brand;
     }
 
-    await this.productRepository.merge(productExists, product);
+    if (product.categoryIds) {
+      const categories = await this.categoriesRepository.findByIds(
+        product.categoryIds,
+      );
+      if (categories.length !== product.categoryIds.length) {
+        throw new HttpException(
+          `Some categories were not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      productExists.categories = categories;
+    }
+
+    this.productRepository.merge(productExists, product);
     return await this.productRepository.save(productExists);
   }
 

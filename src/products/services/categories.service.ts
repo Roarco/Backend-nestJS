@@ -25,7 +25,10 @@ export class CategoriesService {
    * @returns A category object
    */
   async findOne(id: string): Promise<Category> {
-    const category = await this.categoryRepository.findOne({ where: { id } });
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+      relations: ['products'],
+    });
     if (!category) {
       throw new HttpException(`Category not found`, HttpStatus.NOT_FOUND);
     }
