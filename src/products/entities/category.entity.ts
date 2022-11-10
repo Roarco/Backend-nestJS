@@ -5,7 +5,10 @@ import {
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+import { Product } from './product.entity';
 @Entity()
 export class Category {
   @ApiProperty()
@@ -23,6 +26,10 @@ export class Category {
   @ApiProperty()
   @Column({ type: 'varchar', length: 255, nullable: false })
   image: string;
+
+  @ManyToMany(() => Product, (product) => product.categories)
+  @JoinTable()
+  products: Product[];
 
   @CreateDateColumn({
     type: 'timestamptz',
