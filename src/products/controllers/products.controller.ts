@@ -64,4 +64,24 @@ export class ProductsController {
   delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     return this.productsService.delete(id);
   }
+
+  @ApiOperation({ summary: 'Delete Category from Product' })
+  @Delete(':id/category/:categoryId')
+  @HttpCode(HttpStatus.OK)
+  deleteCategoryFromProduct(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('categoryId', ParseUUIDPipe) categoryId: string,
+  ): Promise<Product> {
+    return this.productsService.removeCategoryFromProduct(id, categoryId);
+  }
+
+  @ApiOperation({ summary: 'Add Category to Product' })
+  @Post(':id/category/:categoryId')
+  @HttpCode(HttpStatus.CREATED)
+  addCategoryToProduct(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('categoryId', ParseUUIDPipe) categoryId: string,
+  ): Promise<Product> {
+    return this.productsService.addCategoryToProduct(id, categoryId);
+  }
 }

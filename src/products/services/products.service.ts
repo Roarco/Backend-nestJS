@@ -146,4 +146,73 @@ export class ProductsService {
 
     return await this.productRepository.delete(id);
   }
+
+  /**
+   * It finds a product by its ID, then finds a category by its ID, then removes the category from the
+   * product's categories array
+   * @param {string} productId - The ID of the product we want to remove a category from.
+   * @param {string} categoryId - The id of the category to be removed from the product.
+   * @returns The product with the category removed.
+   */
+  async removeCategoryFromProduct(
+    productId: string,
+    categoryId: string,
+  ): Promise<Product> {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['categories'],
+    });
+
+    if (!product) {
+      throw new HttpException(`Product not found`, HttpStatus.NOT_FOUND);
+    }
+
+    const category = await this.categoriesRepository.findOne({
+      where: { id: categoryId },
+    });
+
+    if (!category) {
+      throw new HttpException(`Category not found`, HttpStatus.NOT_FOUND);
+    }
+
+    product.categories = product.categories.filter(
+      (category) => category.id !== categoryId,
+    );
+
+    return await this.productRepository.save(product);
+  }
+
+  async addCategoryToProduct(
+    productId: string,
+    categoryId: string,
+  ): Promise<Product> {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['categories'],
+    });
+
+    if (!product) {
+      throw new HttpException(`Product not found`, HttpStatus.NOT_FOUND);
+    }
+
+    const category = await this.categoriesRepository.findOne({
+      where: { id: categoryId },
+    });
+
+    if (!category) {
+      throw new HttpException(`Category not found`, HttpStatus.NOT_FOUND);
+    }
+
+    // Check if the product already has the category
+    if (product.categories.some((category) => category.id === categoryId)) {
+      throw new HttpException(
+        `Product already has category ${category.name}`,
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    product.categories.push(category);
+
+    return await this.productRepository.save(product);
+  }
 }
