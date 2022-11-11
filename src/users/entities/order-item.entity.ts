@@ -4,23 +4,27 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany,
   Entity,
+  Column,
 } from 'typeorm';
-import { Customer } from './customer.entity';
-import { OrderItem } from './order-item.entity';
+import { Product } from '../../products/entities/product.entity';
+import { Order } from './order.entity';
 
 @Entity()
-export class Order {
+export class OrderItem {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Customer, (customer) => customer.orders)
-  customer: Customer;
+  @ApiProperty()
+  @Column({ type: 'int', nullable: false }) // Esta columna es la que se agrega a la entidad OrderItem
+  quantity: number;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
-  items: OrderItem[];
+  @ManyToOne(() => Order, (order) => order.items)
+  order: Order;
+
+  @ManyToOne(() => Product) // en este caso no es fucional la relación bidireccional
+  product: Product;
 
   @CreateDateColumn({
     type: 'timestamptz',

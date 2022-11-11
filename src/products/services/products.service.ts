@@ -182,6 +182,12 @@ export class ProductsService {
     return await this.productRepository.save(product);
   }
 
+  /**
+   * It adds a category to a product
+   * @param {string} productId - The id of the product we want to add a category to.
+   * @param {string} categoryId - The id of the category to add to the product
+   * @returns The product with the new category added to it.
+   */
   async addCategoryToProduct(
     productId: string,
     categoryId: string,
