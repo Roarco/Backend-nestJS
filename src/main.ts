@@ -12,6 +12,9 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true, // <-- remove all properties that are not defined in the DTO
       forbidNonWhitelisted: true, // <-- throw an error if a property is not defined in the DTO
+      transformOptions: {
+        enableImplicitConversion: true, // <-- convert string to numbers and dates
+      },
     }),
   );
 

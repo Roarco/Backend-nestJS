@@ -17,7 +17,11 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 //import { ParseIntPipe } from '../../common/parse-int.pipe'; // <-- pipe custom
 import { ProductsService } from '../services/products.service';
 import { Product } from '../entities/product.entity';
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  FilterProductDto,
+} from '../dtos/products.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -27,11 +31,8 @@ export class ProductsController {
   @ApiOperation({ summary: 'Get all products' })
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll(
-    @Query('limit') limit: number,
-    @Query('offset') offset: number,
-  ): Promise<Product[]> {
-    return this.productsService.findAll(limit, offset);
+  getAll(@Query() params: FilterProductDto): Promise<Product[]> {
+    return this.productsService.findAll(params);
   }
 
   @ApiOperation({ summary: 'Get product by id' })

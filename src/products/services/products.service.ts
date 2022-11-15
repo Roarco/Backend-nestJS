@@ -3,7 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Product } from '../entities/product.entity';
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  FilterProductDto,
+} from '../dtos/products.dto';
 import { Brand } from '../entities/brand.entity';
 import { Category } from '../entities/category.entity';
 
@@ -17,18 +21,24 @@ export class ProductsService {
   ) {}
 
   /**
-   * It returns a list of products, with a limit of how many products to return, and an offset of how
-   * many products to skip
-   * @param {number} limit - number - The number of products to return
-   * @param {number} offset - The number of records to skip.
+   * It takes in a FilterProductDto object, and if it exists, it takes the limit and offset properties
+   * from it, and if they exist, it returns the products from the database, taking the limit and
+   * skipping the offset
+   * @param {FilterProductDto} [params] - FilterProductDto
    * @returns An array of products
    */
-  async findAll(limit: number, offset: number): Promise<Product[]> {
-    const products = await this.productRepository.find({
-      take: limit,
-      skip: offset,
-    });
-    return products;
+  async findAll(params?: FilterProductDto): Promise<Product[]> {
+    if (params) {
+      const { limit, offset } = params;
+
+      if (limit && offset) {
+        return this.productRepository.find({
+          take: limit,
+          skip: offset,
+        });
+      }
+    }
+    return this.productRepository.find();
   }
 
   /**
