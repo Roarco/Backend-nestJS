@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Between, FindConditions } from 'typeorm';
 
 import { Product } from '../entities/product.entity';
 import {
@@ -21,20 +21,29 @@ export class ProductsService {
   ) {}
 
   /**
-   * It takes in a FilterProductDto object, and if it exists, it takes the limit and offset properties
-   * from it, and if they exist, it returns the products from the database, taking the limit and
-   * skipping the offset
+   * If the params object is defined, then we'll use the limit and offset properties to return a
+   * paginated list of products. If the minPrice and maxPrice properties are defined, then we'll return
+   * a list of products that are within the specified price range. If no params object is defined, then
+   * we'll return all products
    * @param {FilterProductDto} [params] - FilterProductDto
    * @returns An array of products
    */
   async findAll(params?: FilterProductDto): Promise<Product[]> {
     if (params) {
-      const { limit, offset } = params;
+      const { limit, offset, minPrice, maxPrice } = params;
+      const where: FindConditions<Product> = {};
 
       if (limit && offset) {
         return this.productRepository.find({
           take: limit,
           skip: offset,
+        });
+      }
+
+      if (minPrice && maxPrice) {
+        where.price = Between(minPrice, maxPrice);
+        return this.productRepository.find({
+          where,
         });
       }
     }
