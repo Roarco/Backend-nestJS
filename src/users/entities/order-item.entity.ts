@@ -10,6 +10,8 @@ import {
 import { Product } from '../../products/entities/product.entity';
 import { Order } from './order.entity';
 
+import { Exclude } from 'class-transformer';
+
 @Entity({ name: 'order_items' })
 export class OrderItem {
   @ApiProperty()
@@ -26,6 +28,7 @@ export class OrderItem {
   @ManyToOne(() => Product) // en este caso no es fucional la relación bidireccional
   product: Product;
 
+  @Exclude()
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
@@ -33,6 +36,7 @@ export class OrderItem {
   })
   createAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',

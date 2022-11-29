@@ -10,6 +10,8 @@ import {
 import { Customer } from './customer.entity';
 import { OrderItem } from './order-item.entity';
 
+import { Exclude, Expose } from 'class-transformer';
+
 @Entity({ name: 'orders' })
 export class Order {
   @ApiProperty()
@@ -19,6 +21,7 @@ export class Order {
   @ManyToOne(() => Customer, (customer) => customer.orders)
   customer: Customer;
 
+  @Exclude()
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   items: OrderItem[];
 
@@ -35,4 +38,29 @@ export class Order {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateAt: Date;
+
+  @Expose()
+  get products() {
+    if (this.items) {
+      return this.items
+        .filter((item) => !!item)
+        .map((item) => ({
+          ...item.product,
+          quantity: item.quantity,
+        }));
+    }
+  }
+
+  @Expose()
+  get total() {
+    if (this.items) {
+      return this.items
+        .filter((item) => !!item)
+        .reduce((total, item) => {
+          const totalItem = item.product.price * item.quantity;
+          return total + totalItem;
+        }, 0);
+    }
+    return 0;
+  }
 }
