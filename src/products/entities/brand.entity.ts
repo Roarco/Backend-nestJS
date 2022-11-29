@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Product } from './product.entity';
-@Entity()
+@Entity({ name: 'brands' })
 export class Brand {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
@@ -30,12 +30,14 @@ export class Brand {
   products: Product[];
 
   @CreateDateColumn({
+    name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
   @UpdateDateColumn({
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })

@@ -9,7 +9,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Product } from './product.entity';
-@Entity()
+@Entity({ name: 'categories' })
 export class Category {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
@@ -28,16 +28,26 @@ export class Category {
   image: string;
 
   @ManyToMany(() => Product, (product) => product.categories)
-  @JoinTable()
+  @JoinTable({
+    name: 'product_category',
+    joinColumn: {
+      name: 'category_id',
+    },
+    inverseJoinColumn: {
+      name: 'product_id',
+    },
+  })
   products: Product[];
 
   @CreateDateColumn({
+    name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
   @UpdateDateColumn({
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })

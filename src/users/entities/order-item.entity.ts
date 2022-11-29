@@ -10,7 +10,7 @@ import {
 import { Product } from '../../products/entities/product.entity';
 import { Order } from './order.entity';
 
-@Entity()
+@Entity({ name: 'order_items' })
 export class OrderItem {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
@@ -27,12 +27,14 @@ export class OrderItem {
   product: Product;
 
   @CreateDateColumn({
+    name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
   @UpdateDateColumn({
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })

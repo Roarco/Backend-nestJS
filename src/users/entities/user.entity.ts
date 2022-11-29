@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Customer } from './customer.entity';
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
@@ -33,16 +33,18 @@ export class User {
 
   @ApiProperty()
   @OneToOne(() => Customer, (customer) => customer.user)
-  @JoinColumn()
+  @JoinColumn({ name: 'customer_id' })
   customer: Customer;
 
   @CreateDateColumn({
+    name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
   @UpdateDateColumn({
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })

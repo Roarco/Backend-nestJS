@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Order } from './order.entity';
-@Entity()
+@Entity({ name: 'customers' })
 export class Customer {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
@@ -36,12 +36,14 @@ export class Customer {
   orders: Order[];
 
   @CreateDateColumn({
+    name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
   @UpdateDateColumn({
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
